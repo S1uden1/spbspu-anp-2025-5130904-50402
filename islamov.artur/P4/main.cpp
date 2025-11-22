@@ -38,14 +38,29 @@ namespace islamov {
     }
     size_t res_index = 0;
     const char* currentCharPtr = input_string;
+    bool last_was_underscore = false;
     while (*currentCharPtr != '\0') {
-      unsigned char currentChar = static_cast<unsigned char>(*currentCharPtr);
-      if (std::isalpha(currentChar) == 0) {
+      unsigned char current_char = static_cast<unsigned char>(*currentCharPtr);
+      if (std::isalpha(current_char)) {
+        currentCharPtr++;
+        continue;
+      }
+      if (*currentCharPtr == '_') {
+        if (!last_was_underscore) {
+          if (res_index >= buffer_size - 1) {
+            return -1;
+          }
+          res_buffer[res_index] = *currentCharPtr;
+          res_index = res_index + 1;
+          last_was_underscore = true;
+        }
+      } else {
         if (res_index >= buffer_size - 1) {
           return -1;
         }
         res_buffer[res_index] = *currentCharPtr;
         res_index = res_index + 1;
+        last_was_underscore = false;
       }
       currentCharPtr = currentCharPtr + 1;
     }
