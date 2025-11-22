@@ -69,17 +69,47 @@ namespace islamov {
   }
 } 
 
-int main() {
-  const char* string1 = "AbC_aBc";
-  const char* string2 = "2ab_c_1d";
-  const char* chars_to_remove = "abc";
-  const size_t buffer_size = 100;
-  char res_buffer[buffer_size];
-  std::cout << "Original: " << string1 << '\n';
-  islamov::excludeCFFS(string1, chars_to_remove, res_buffer, buffer_size);
-  std::cout << "excludeCFFS: " << res_buffer << '\n';
-  std::cout << "Original: " << string2 << '\n';
-  islamov::removeLL(string2, res_buffer, buffer_size);
-  std::cout << "RemoveLL: " << res_buffer  << '\n';
+int main() { 
+  char* input_line = nullptr;
+  size_t buffer_size = 0;
+  std::cout << "Enter string: ";
+  ssize_t chars_read = getline(&input_line, &buffer_size, stdin);
+  if (chars_read < 0) {
+    std::cerr << "Error reading input" << '\n';
+    if (input_line != nullptr) {
+      std::free(input_line);
+    }
+    return 1;
+  }
+  if (chars_read > 0 && input_line[chars_read - 1] == '\n') {
+    input_line[chars_read - 1] = '\0';
+    chars_read = chars_read - 1;
+  }
+  size_t max_res_size = static_cast<size_t>(chars_read) + 1;
+  char* res_buffer = static_cast<char*>(std::malloc(max_res_size));
+  if (res_buffer == nullptr) {
+    std::cerr << "Memory allocation failed" << '\n';
+    std::free(input_line);
+    return 1;
+  }
+  const char* secondString = "abc";
+  int res_length = islamov::excludeCFFS(input_line, secondString , res_buffer, max_res_size);   
+  if (res_length < 0) {
+    std::cerr << "Error in string processing" << '\n';
+    std::free(input_line);
+    std::free(res_buffer);
+    return 1;
+  }
+  std::cout << res_buffer << '\n';
+  res_length = islamov::removeLL(input_line, res_buffer, max_res_size);
+  if (res_length < 0) {
+    std::cerr << "Error in string processing" << '\n';
+    std::free(input_line);
+    std::free(res_buffer);
+    return 1;
+  }
+  std::cout << res_buffer << '\n';
+  std::free(input_line);
+  std::free(res_buffer);
   return 0;
 }
