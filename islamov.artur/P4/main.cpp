@@ -2,7 +2,6 @@
 #include <cctype>
 #include <cstring>
 #include <cstdlib>
-
 namespace islamov {
   int excludeCFFS(const char* string1, const char* string2, char* res_buffer, size_t buffer_size) noexcept {
     if (string1 == nullptr || string2 == nullptr || res_buffer == nullptr) {
