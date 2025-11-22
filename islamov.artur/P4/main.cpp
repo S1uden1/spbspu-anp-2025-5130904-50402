@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cstring>
 #include <cstdlib>
+
 namespace islamov {
   int excludeCFFS(const char* string1, const char* string2, char* res_buffer, size_t buffer_size) noexcept {
     if (string1 == nullptr || string2 == nullptr || res_buffer == nullptr) {
@@ -66,9 +67,9 @@ namespace islamov {
     res_buffer[res_index] = '\0';
     return static_cast<int>(res_index);
   }
-} 
+}
 
-int main() { 
+int main() {
   char* input_line = nullptr;
   size_t buffer_size = 0;
   std::cout << "Enter string: ";
@@ -92,7 +93,7 @@ int main() {
     return 1;
   }
   const char* secondString = "abc";
-  int res_length = islamov::excludeCFFS(input_line, secondString , res_buffer, max_res_size);   
+  int res_length = islamov::excludeCFFS(input_line, secondString, res_buffer, max_res_size);
   if (res_length < 0) {
     std::cerr << "Error in string processing" << '\n';
     std::free(input_line);
