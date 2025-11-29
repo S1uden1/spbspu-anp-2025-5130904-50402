@@ -91,7 +91,7 @@ int main() {
     std::free(input_line);
     return 1;
   }
-  const char* secondString = "abcdefghijklmnopqrstuvwxyz";
+  const char* secondString = "abc";
   char* result = islamov::excludeCFFS(input_line, secondString, res_buffer, max_res_size);
   if (result == nullptr) {
     std::cerr << "Error in string processing" << '\n';
