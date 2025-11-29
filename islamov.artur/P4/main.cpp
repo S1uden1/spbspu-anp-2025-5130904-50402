@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 namespace islamov {
-  char* excludeCFFS(const char* string1, const char* string2, char* res_buffer, size_t buffer_size) noexcept 
+  char* excludeCFFS(const char* string1, const char* string2, char* res_buffer, size_t buffer_size) noexcept
   {
     if (string1 == nullptr || string2 == nullptr || res_buffer == nullptr) {
       return nullptr;
@@ -19,21 +19,21 @@ namespace islamov {
           should_exclude = true;
           break;
         }
-        searchCharPtr = searchCharPtr + 1;
+        ++searchCharPtr;
       }
       if (!should_exclude) {
         if (res_index >= buffer_size - 1) {
           return nullptr;
         }
         res_buffer[res_index] = *currentCharPtr;
-        res_index = res_index + 1;
+        ++res_index;
       }
-      currentCharPtr = currentCharPtr + 1;
+      ++currentCharPtr;
     }
     res_buffer[res_index] = '\0';
     return res_buffer;
   }
-  char* removeLL(const char* input_string, char* res_buffer, size_t buffer_size) noexcept 
+  char* removeLL(const char* input_string, char* res_buffer, size_t buffer_size) noexcept
   {
     if (input_string == nullptr || res_buffer == nullptr) {
       return nullptr;
@@ -50,7 +50,7 @@ namespace islamov {
             return nullptr;
           }
           res_buffer[res_index] = *currentCharPtr;
-          res_index = res_index + 1;
+          ++res_index;
           last_was_underscore = true;
         }
       } else {
@@ -58,7 +58,7 @@ namespace islamov {
           return nullptr;
         }
         res_buffer[res_index] = *currentCharPtr;
-        res_index = res_index + 1;
+        ++res_index;
         last_was_underscore = false;
       }
       ++currentCharPtr;
@@ -82,7 +82,7 @@ int main() {
   }
   if (chars_read > 0 && input_line[chars_read - 1] == '\n') {
     input_line[chars_read - 1] = '\0';
-    chars_read = chars_read - 1;
+    --chars_read;
   }
   size_t max_res_size = static_cast<size_t>(chars_read) + 1;
   char* res_buffer = static_cast<char*>(std::malloc(max_res_size));
@@ -91,7 +91,7 @@ int main() {
     std::free(input_line);
     return 1;
   }
-  const char* secondString = "abc";
+  const char* secondString = "abcdefghijklmnopqrstuvwxyz";
   char* result = islamov::excludeCFFS(input_line, secondString, res_buffer, max_res_size);
   if (result == nullptr) {
     std::cerr << "Error in string processing" << '\n';
