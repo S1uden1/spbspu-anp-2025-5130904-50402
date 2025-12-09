@@ -5,24 +5,21 @@ namespace islamov
 {
   char* excludeCFFS(const char* string1, const char* string2, char* resBuffer, size_t bufferSize) noexcept
   {
-    if (string1 == nullptr || string2 == nullptr || resBuffer == nullptr)
+    if (string1 == nullptr || string2 == nullptr || resBuffer == nullptr || bufferSize == 0)
     {
       return nullptr;
     }
     size_t resIndex = 0;
-    const char* currentCharPtr = string1;
-    while (*currentCharPtr != '\0')
+    for (const char* src = string1; *src != '\0'; ++src)
     {
       bool shouldExclude = false;
-      const char* searchCharPtr = string2;
-      while (*searchCharPtr != '\0')
+      for (const char* search = string2; *search != '\0'; ++search)
       {
-        if (*currentCharPtr == *searchCharPtr)
+        if (*src == *search)
         {
           shouldExclude = true;
           break;
         }
-        ++searchCharPtr;
       }
       if (!shouldExclude)
       {
@@ -30,26 +27,24 @@ namespace islamov
         {
           return nullptr;
         }
-        resBuffer[resIndex] = *currentCharPtr;
+        resBuffer[resIndex] = *src;
         ++resIndex;
       }
-      ++currentCharPtr;
     }
     resBuffer[resIndex] = '\0';
     return resBuffer;
   }
   char* removeLL(const char* inputString, char* resBuffer, size_t bufferSize) noexcept
   {
-    if (inputString == nullptr || resBuffer == nullptr)
+    if (inputString == nullptr || resBuffer == nullptr || bufferSize == 0)
     {
       return nullptr;
     }
     size_t resIndex = 0;
-    const char* currentCharPtr = inputString;
     bool lastWasUnderscore = false;
-    while (*currentCharPtr != '\0')
+    for (const char* src = inputString; *src != '\0'; ++src)
     {
-      if (*currentCharPtr == '_')
+      if (*src == '_')
       {
         if (!lastWasUnderscore)
         {
@@ -57,7 +52,7 @@ namespace islamov
           {
             return nullptr;
           }
-          resBuffer[resIndex] = *currentCharPtr;
+          resBuffer[resIndex] = *src;
           ++resIndex;
           lastWasUnderscore = true;
         }
@@ -68,11 +63,10 @@ namespace islamov
         {
           return nullptr;
         }
-        resBuffer[resIndex] = *currentCharPtr;
+        resBuffer[resIndex] = *src;
         ++resIndex;
         lastWasUnderscore = false;
       }
-      ++currentCharPtr;
     }
     resBuffer[resIndex] = '\0';
     return resBuffer;
