@@ -1,114 +1,131 @@
 #include <iostream>
-#include <cctype>
 #include <cstring>
 #include <cstdlib>
-
-namespace islamov {
-  char* excludeCFFS(const char* string1, const char* string2, char* res_buffer, size_t buffer_size) noexcept
+namespace islamov
+{
+  char* excludeCFFS(const char* string1, const char* string2, char* resBuffer, size_t bufferSize) noexcept
   {
-    if (string1 == nullptr || string2 == nullptr || res_buffer == nullptr) {
+    if (string1 == nullptr || string2 == nullptr || resBuffer == nullptr)
+    {
       return nullptr;
     }
-    size_t res_index = 0;
+    size_t resIndex = 0;
     const char* currentCharPtr = string1;
-    while (*currentCharPtr != '\0') {
-      bool should_exclude = false;
+    while (*currentCharPtr != '\0')
+    {
+      bool shouldExclude = false;
       const char* searchCharPtr = string2;
-      while (*searchCharPtr != '\0') {
-        if (*currentCharPtr == *searchCharPtr) {
-          should_exclude = true;
+      while (*searchCharPtr != '\0')
+      {
+        if (*currentCharPtr == *searchCharPtr)
+        {
+          shouldExclude = true;
           break;
         }
         ++searchCharPtr;
       }
-      if (!should_exclude) {
-        if (res_index >= buffer_size - 1) {
+      if (!shouldExclude)
+      {
+        if (resIndex >= bufferSize - 1)
+        {
           return nullptr;
         }
-        res_buffer[res_index] = *currentCharPtr;
-        ++res_index;
+        resBuffer[resIndex] = *currentCharPtr;
+        ++resIndex;
       }
       ++currentCharPtr;
     }
-    res_buffer[res_index] = '\0';
-    return res_buffer;
+    resBuffer[resIndex] = '\0';
+    return resBuffer;
   }
-  char* removeLL(const char* input_string, char* res_buffer, size_t buffer_size) noexcept
+  char* removeLL(const char* inputString, char* resBuffer, size_t bufferSize) noexcept
   {
-    if (input_string == nullptr || res_buffer == nullptr) {
+    if (inputString == nullptr || resBuffer == nullptr)
+    {
       return nullptr;
     }
-    size_t res_index = 0;
-    const char* currentCharPtr = input_string;
-    bool last_was_underscore = false;
-    while (*currentCharPtr != '\0') {
-      unsigned char current_char = static_cast<unsigned char>(*currentCharPtr);
-      if (std::isalpha(current_char)) {
-      } else if (*currentCharPtr == '_') {
-        if (!last_was_underscore) {
-          if (res_index >= buffer_size - 1) {
+    size_t resIndex = 0;
+    const char* currentCharPtr = inputString;
+    bool lastWasUnderscore = false;
+    while (*currentCharPtr != '\0')
+    {
+      if (*currentCharPtr == '_')
+      {
+        if (!lastWasUnderscore)
+        {
+          if (resIndex >= bufferSize - 1)
+          {
             return nullptr;
           }
-          res_buffer[res_index] = *currentCharPtr;
-          ++res_index;
-          last_was_underscore = true;
+          resBuffer[resIndex] = *currentCharPtr;
+          ++resIndex;
+          lastWasUnderscore = true;
         }
-      } else {
-        if (res_index >= buffer_size - 1) {
+      }
+      else
+      {
+        if (resIndex >= bufferSize - 1)
+        {
           return nullptr;
         }
-        res_buffer[res_index] = *currentCharPtr;
-        ++res_index;
-        last_was_underscore = false;
+        resBuffer[resIndex] = *currentCharPtr;
+        ++resIndex;
+        lastWasUnderscore = false;
       }
       ++currentCharPtr;
     }
-    res_buffer[res_index] = '\0';
-    return res_buffer;
+    resBuffer[resIndex] = '\0';
+    return resBuffer;
   }
 }
-
-int main() {
-  char* input_line = nullptr;
-  size_t buffer_size = 0;
+int main()
+{
+  char* inputLine = nullptr;
+  size_t bufferSize = 0;
   std::cout << "Enter string: ";
-  ssize_t chars_read = getline(&input_line, &buffer_size, stdin);
-  if (chars_read < 0) {
+  ssize_t charsRead = getline(&inputLine, &bufferSize, stdin);
+  if (charsRead < 0)
+  {
     std::cerr << "Error reading input" << '\n';
-    if (input_line != nullptr) {
-      std::free(input_line);
+    if (inputLine != nullptr)
+    {
+      std::free(inputLine);
     }
     return 1;
   }
-  if (chars_read > 0 && input_line[chars_read - 1] == '\n') {
-    input_line[chars_read - 1] = '\0';
-    --chars_read;
+  if (charsRead > 0 && inputLine[charsRead - 1] == '\n')
+  {
+    inputLine[charsRead - 1] = '\0';
+    --charsRead;
   }
-  size_t max_res_size = static_cast<size_t>(chars_read) + 1;
-  char* res_buffer = static_cast<char*>(std::malloc(max_res_size));
-  if (res_buffer == nullptr) {
+  size_t maxResSize = static_cast < size_t > (charsRead) + 1;
+  char* resBuffer = static_cast < char* > (std::malloc(maxResSize));
+  if (resBuffer == nullptr)
+  {
     std::cerr << "Memory allocation failed" << '\n';
-    std::free(input_line);
+    std::free(inputLine);
     return 1;
   }
   const char* secondString = "abc";
-  char* result = islamov::excludeCFFS(input_line, secondString, res_buffer, max_res_size);
-  if (result == nullptr) {
+  char* result = islamov::excludeCFFS(inputLine, secondString, resBuffer, maxResSize);
+  if (result == nullptr)
+  {
     std::cerr << "Error in string processing" << '\n';
-    std::free(input_line);
-    std::free(res_buffer);
+    std::free(inputLine);
+    std::free(resBuffer);
     return 1;
   }
   std::cout << result << '\n';
-  result = islamov::removeLL(input_line, res_buffer, max_res_size);
-  if (result == nullptr) {
+  result = islamov::removeLL(inputLine, resBuffer, maxResSize);
+  if (result == nullptr)
+  {
     std::cerr << "Error in string processing" << '\n';
-    std::free(input_line);
-    std::free(res_buffer);
+    std::free(inputLine);
+    std::free(resBuffer);
     return 1;
   }
   std::cout << result << '\n';
-  std::free(input_line);
-  std::free(res_buffer);
+  std::free(inputLine);
+  std::free(resBuffer);
   return 0;
 }
