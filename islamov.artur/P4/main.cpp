@@ -70,34 +70,31 @@ int main()
     inputLine[charsRead - 1] = '\0';
     --charsRead;
   }
-  size_t maxResSize = static_cast < size_t > (charsRead) + 1;
-  char* resBuffer = static_cast < char* > (std::malloc(maxResSize));
-  if (resBuffer == nullptr)
+  const size_t maxResSize = static_cast < size_t > (charsRead) + 1;
+  char* resBuffer1 = static_cast < char* > (std::malloc(maxResSize));
+  char* resBuffer2 = static_cast < char* > (std::malloc(maxResSize));
+  if (resBuffer1 == nullptr || resBuffer2 == nullptr)
   {
     std::cerr << "Memory allocation failed" << '\n';
     std::free(inputLine);
+    std::free(resBuffer1);
+    std::free(resBuffer2);
     return 1;
   }
-  const char* secondString = "abc";
-  char* result = islamov::excludeCFFS(inputLine, secondString, resBuffer, maxResSize);
-  if (result == nullptr)
+  char* result1 = islamov::excludeCFFS(inputLine, "abc", resBuffer1, maxResSize);
+  char* result2 = islamov::removeLL(inputLine, resBuffer2, maxResSize);
+  if (result1 == nullptr || result2 == nullptr)
   {
     std::cerr << "Error in string processing" << '\n';
     std::free(inputLine);
-    std::free(resBuffer);
+    std::free(resBuffer1);
+    std::free(resBuffer2);
     return 1;
   }
-  std::cout << result << '\n';
-  result = islamov::removeLL(inputLine, resBuffer, maxResSize);
-  if (result == nullptr)
-  {
-    std::cerr << "Error in string processing" << '\n';
-    std::free(inputLine);
-    std::free(resBuffer);
-    return 1;
-  }
-  std::cout << result << '\n';
+  std::cout << result1 << '\n';
+  std::cout << result2 << '\n';
   std::free(inputLine);
-  std::free(resBuffer);
+  std::free(resBuffer1);
+  std::free(resBuffer2);
   return 0;
 }
