@@ -23,10 +23,6 @@ namespace islamov
       }
       if (!shouldExclude)
       {
-        if (resIndex >= bufferSize - 1)
-        {
-          return nullptr;
-        }
         resBuffer[resIndex] = *src;
         ++resIndex;
       }
@@ -41,23 +37,10 @@ namespace islamov
       return nullptr;
     }
     size_t resIndex = 0;
-    bool lastWasUnderscore = false;
     for (const char* src = inputString; *src != '\0'; ++src)
     {
-      if (*src == '_')
-      {
-        if (!lastWasUnderscore)
-        {
-          if (resIndex >= bufferSize - 1)
-          {
-            return nullptr;
-          }
-          resBuffer[resIndex] = *src;
-          ++resIndex;
-          lastWasUnderscore = true;
-        }
-      }
-      else
+      bool isLatin = ((*src >= 'a' && *src <= 'z') || (*src >= 'A' && *src <= 'Z'));
+      if (!isLatin)
       {
         if (resIndex >= bufferSize - 1)
         {
@@ -65,7 +48,6 @@ namespace islamov
         }
         resBuffer[resIndex] = *src;
         ++resIndex;
-        lastWasUnderscore = false;
       }
     }
     resBuffer[resIndex] = '\0';
@@ -76,15 +58,11 @@ int main()
 {
   char* inputLine = nullptr;
   size_t bufferSize = 0;
-  std::cout << "Enter string: ";
   ssize_t charsRead = getline(&inputLine, &bufferSize, stdin);
   if (charsRead < 0)
   {
     std::cerr << "Error reading input" << '\n';
-    if (inputLine != nullptr)
-    {
-      std::free(inputLine);
-    }
+    std::free(inputLine);
     return 1;
   }
   if (charsRead > 0 && inputLine[charsRead - 1] == '\n')
