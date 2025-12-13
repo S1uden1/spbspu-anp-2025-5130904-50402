@@ -75,6 +75,90 @@ namespace islamov
     w_ *= k;
     h_ *= k;
   }
+  class Triangle : public Shape
+  {
+  public:
+    Triangle(const point_t& v1, const point_t& v2, const point_t& v3);
+    double area() const override;
+    rect_t frame() const override;
+    void move(const point_t& p) override;
+    void move(double dx, double dy) override;
+    void scale(double k) override;
+  private:
+    point_t v_[3];
+    point_t c_;
+    void calcCenter();
+    double triArea(const point_t& a, const point_t& b, const point_t& c) const;
+  };
+  Triangle::Triangle(const point_t& v1, const point_t& v2, const point_t& v3):
+    v_{v1, v2, v3}
+  {
+    calcCenter();
+  }
+  void Triangle::calcCenter()
+  {
+    c_.x = (v_[0].x + v_[1].x + v_[2].x) / 3.0;
+    c_.y = (v_[0].y + v_[1].y + v_[2].y) / 3.0;
+  }
+  double Triangle::triArea(const point_t& a, const point_t& b, const point_t& c) const
+  {
+    double ar = a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
+    if (ar < 0.0) ar = -ar;
+    return ar / 2.0;
+  }
+  double Triangle::area() const
+  {
+    return triArea(v_[0], v_[1], v_[2]);
+  }
+  rect_t Triangle::frame() const
+  {
+    double minX = v_[0].x;
+    double maxX = v_[0].x;
+    double minY = v_[0].y;
+    double maxY = v_[0].y;
+    for (int i = 1; i < 3; ++i)
+    {
+      if (v_[i].x < minX) minX = v_[i].x;
+      if (v_[i].x > maxX) maxX = v_[i].x;
+      if (v_[i].y < minY) minY = v_[i].y;
+      if (v_[i].y > maxY) maxY = v_[i].y;
+    }
+    rect_t f;
+    f.w = maxX - minX;
+    f.h = maxY - minY;
+    f.pos.x = minX + f.w / 2.0;
+    f.pos.y = minY + f.h / 2.0;
+    return f;
+  }
+  void Triangle::move(const point_t& p)
+  {
+    double dx = p.x - c_.x;
+    double dy = p.y - c_.y;
+    move(dx, dy);
+  }
+  void Triangle::move(double dx, double dy)
+  {
+    for (int i = 0; i < 3; ++i)
+    {
+      v_[i].x += dx;
+      v_[i].y += dy;
+    }
+    c_.x += dx;
+    c_.y += dy;
+  }
+  void Triangle::scale(double k)
+  {
+    if (k <= 0.0)
+    {
+      std::cerr << "Error: scale coefficient must be positive\n";
+      exit(2);
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+      v_[i].x = c_.x + (v_[i].x - c_.x) * k;
+      v_[i].y = c_.y + (v_[i].y - c_.y) * k;
+    }
+  }
   void scaleAll(Shape** s, size_t n, const point_t& c, double k)
   {
     if (k <= 0.0)
@@ -136,7 +220,7 @@ namespace islamov
       std::cout << "Shape " << (i + 1) << ":\n";
       std::cout << "  Area: " << std::fixed << std::setprecision(2) << s[i]->area() << '\n';
       rect_t f = s[i]->frame();
-      std::cout << "  Frame rectangle: center(" << f.pos.x << ", " << f.pos.y << "), width: " << f.w << ", height: " << f.h << "\n";
+      std::cout << "  Frame rectangle: center(" << f.pos.x << ", " << f.pos.y << "), width: " << f.w << ", height: " << f.h << '\n';
     }
     std::cout << "Total area: " << std::fixed << std::setprecision(2) << totalArea(s, n) << '\n';
     rect_t o = overallFrame(s, n);
@@ -146,9 +230,9 @@ namespace islamov
 int main()
 {
   islamov::Rectangle r1({2.0, 3.0}, 4.0, 5.0);
-  islamov::Rectangle r2({-1.0, -2.0}, 3.0, 2.0);
+  islamov::Triangle t1({0.0, 0.0}, {4.0, 0.0}, {2.0, 3.0});
   const size_t n = 2;
-  islamov::Shape* s[n] = {&r1, &r2};
+  islamov::Shape* s[n] = {&r1, &t1};
   islamov::printInfo(s, n, "BEFORE SCALING");
   islamov::point_t sc = {1.0, 1.0};
   double k = 2.0;
